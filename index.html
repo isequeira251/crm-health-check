@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRM Health Check — score your CRM in 2 minutes</title>
+<meta name="description" content="A free 2-minute self-assessment for small businesses on HubSpot, Salesforce, Pipedrive, Zoho or GoHighLevel. Get a CRM health score and the top fixes — no signup.">
+<style>
+  :root{
+    --ink:#15233b; --muted:#5b6b85; --line:#e4e9f2; --bg:#f6f8fc; --card:#fff;
+    --brand:#2f6df6; --brand-d:#1f57d6; --good:#1aa97a; --warn:#e6a300; --bad:#e2533b;
+    --shadow:0 1px 2px rgba(20,35,59,.06),0 8px 24px rgba(20,35,59,.06);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 20px 64px}
+  header{text-align:center;margin-bottom:28px}
+  .kicker{font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);font-size:13px}
+  h1{font-size:30px;line-height:1.2;margin:.35em 0 .25em}
+  .sub{color:var(--muted);max-width:560px;margin:0 auto;font-size:17px}
+  .progress{position:sticky;top:0;background:var(--bg);padding:12px 0 10px;z-index:5}
+  .bar{height:7px;background:var(--line);border-radius:999px;overflow:hidden}
+  .bar>i{display:block;height:100%;width:0;background:var(--brand);transition:width .3s ease}
+  .bar-label{font-size:13px;color:var(--muted);margin-top:6px;text-align:center}
+  .q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;
+    margin:14px 0;box-shadow:var(--shadow)}
+  .q .cat{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--brand)}
+  .q p{margin:6px 0 14px;font-size:17px;font-weight:600}
+  .opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .opts button{appearance:none;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--ink);
+    border-radius:10px;padding:11px 8px;font-size:14px;font-weight:600;transition:.15s}
+  .opts button:hover{border-color:var(--brand)}
+  .opts button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+  .cta-row{text-align:center;margin-top:26px}
+  .btn{display:inline-block;cursor:pointer;border:none;border-radius:11px;padding:15px 26px;
+    font-size:17px;font-weight:700;color:#fff;background:var(--brand);text-decoration:none;
+    box-shadow:var(--shadow);transition:.15s}
+  .btn:hover{background:var(--brand-d)}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .btn.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand);box-shadow:none}
+  /* results */
+  #result{display:none;background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:30px 26px;box-shadow:var(--shadow);text-align:center}
+  .score{font-size:64px;font-weight:800;line-height:1;margin:6px 0}
+  .score small{font-size:24px;color:var(--muted);font-weight:600}
+  .band{display:inline-block;font-weight:700;padding:5px 14px;border-radius:999px;font-size:14px;margin-bottom:8px}
+  .meter{height:12px;border-radius:999px;background:var(--line);overflow:hidden;margin:18px auto;max-width:460px}
+  .meter>i{display:block;height:100%;width:0;transition:width .8s ease}
+  .fixes{text-align:left;max-width:560px;margin:22px auto 6px}
+  .fixes h3{margin:0 0 8px;font-size:16px}
+  .fixes li{margin:8px 0;padding-left:6px}
+  .disclaimer{color:var(--muted);font-size:13px;margin-top:18px}
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:40px}
+  footer a{color:var(--muted)}
+  @media (max-width:480px){h1{font-size:25px}.opts button{font-size:13px;padding:10px 6px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Free · 2 minutes · no signup</div>
+    <h1>How healthy is your CRM, really?</h1>
+    <p class="sub">For small teams on HubSpot, Salesforce, Pipedrive, Zoho or GoHighLevel that bought a
+      CRM but never hired someone to run it. Answer 16 quick questions and get your score plus the
+      top things worth fixing.</p>
+  </header>
+
+  <div class="progress">
+    <div class="bar"><i id="barfill"></i></div>
+    <div class="bar-label"><span id="answered">0</span> of <span id="total">16</span> answered</div>
+  </div>
+
+  <form id="quiz"></form>
+
+  <div class="cta-row">
+    <button type="button" id="scoreBtn" class="btn" disabled>See my CRM health score</button>
+  </div>
+
+  <section id="result" aria-live="polite">
+    <div class="band" id="band"></div>
+    <div class="score"><span id="scoreNum">0</span><small>/100</small></div>
+    <div class="meter"><i id="meterfill"></i></div>
+    <p id="verdict" style="max-width:520px;margin:6px auto 0;color:var(--muted)"></p>
+    <div class="fixes">
+      <h3>The first things I'd fix</h3>
+      <ul id="fixlist"></ul>
+    </div>
+    <p style="max-width:540px;margin:18px auto 22px">Want these handled without hiring a full-time
+      ops person? I'll do a <strong>free 30-minute live audit</strong> of your actual CRM and walk you
+      through the top fixes — yours to keep whether or not we work together.</p>
+    <div class="cta-row" style="margin-top:0">
+      <a class="btn" id="bookBtn" href="#" target="_blank" rel="noopener">Book my free CRM audit →</a>
+    </div>
+    <p class="disclaimer">This score is a self-assessment, not a substitute for a real audit.
+      Your answers stay in your browser — nothing is sent anywhere.</p>
+    <div class="cta-row" style="margin-top:14px">
+      <button type="button" class="btn ghost" id="againBtn">Start over</button>
+    </div>
+  </section>
+
+  <footer>
+    Built by <strong>Ian Sequeira</strong> — fractional HubSpot &amp; CRM admin.
+  </footer>
+</div>
+
+<script>
+// ---- CONFIG ---------------------------------------------------------------
+var BOOKING_URL = "https://calendar.app.google/v3L6z6QH2hd1MTpt9";
+
+// Each question scores 0 (No / not sure), 1 (Sort of), 2 (Yes). A LOW total
+// means more pain. `fix` is the remediation shown when this item scores low.
+var QUESTIONS = [
+  {cat:"Data hygiene", q:"Your contacts &amp; companies are largely free of duplicates.",
+   fix:"Dedupe and merge contacts/companies, then add guards so duplicates stop coming back."},
+  {cat:"Data hygiene", q:"Key fields (owner, source, lifecycle stage) are filled in consistently.",
+   fix:"Standardize and back-fill the few fields your reporting depends on."},
+  {cat:"Pipeline", q:"Your deal stages match how you actually sell, and reps keep them current.",
+   fix:"Redefine pipeline stages to match your real process and make updates effortless."},
+  {cat:"Lead routing", q:"Every new lead is automatically assigned to an owner.",
+   fix:"Set up automatic lead routing so nothing sits unassigned."},
+  {cat:"Automation", q:"Repetitive tasks (follow-ups, reminders, internal alerts) are automated.",
+   fix:"Automate the manual busywork that's currently eating selling time."},
+  {cat:"Automation", q:"You're confident your existing automations still work and aren't misfiring.",
+   fix:"Audit and fix the workflows quietly breaking or double-firing in the background."},
+  {cat:"Reporting", q:"You have dashboards leadership actually trusts and looks at.",
+   fix:"Build a small set of dashboards leaders will actually rely on."},
+  {cat:"Reporting", q:"You can answer “where did this month’s revenue come from?” in minutes.",
+   fix:"Wire up source-to-revenue reporting so attribution isn't a spreadsheet exercise."},
+  {cat:"Adoption", q:"Your team uses the CRM daily — not spreadsheets on the side.",
+   fix:"Remove the friction that's pushing your team back into spreadsheets."},
+  {cat:"Ownership", q:"Someone clearly owns the CRM and keeps it clean.",
+   fix:"Put a clear owner on the CRM (that's exactly the fractional role I fill)."},
+  {cat:"Segmentation", q:"Contacts are segmented well enough to send relevant outreach.",
+   fix:"Build the lists/segments that make outreach relevant instead of blast-all."},
+  {cat:"Segmentation", q:"You can tell a marketing-qualified lead from a sales-ready one.",
+   fix:"Define lifecycle stages / lead scoring so hand-offs are clear."},
+  {cat:"Integrations", q:"Your CRM is connected to your other tools (email, forms, billing) — no manual re-entry.",
+   fix:"Connect the systems people are currently copy-pasting between."},
+  {cat:"Value", q:"You're getting the value you expected from what you pay for the CRM.",
+   fix:"Turn on the paid features you're already paying for but not using."},
+  {cat:"Time", q:"Reporting and cleanup don't eat hours of someone's week.",
+   fix:"Take the recurring cleanup and reporting off your team's plate."},
+  {cat:"Resilience", q:"If your “CRM person” left tomorrow, the system wouldn't fall apart.",
+   fix:"Document and stabilize the setup so it doesn't depend on one person's memory."}
+];
+var OPTS = [{t:"No / not sure",v:0},{t:"Sort of",v:1},{t:"Yes",v:2}];
+var MAX = QUESTIONS.length * 2;
+
+var answers = {};
+var form = document.getElementById("quiz");
+document.getElementById("total").textContent = QUESTIONS.length;
+
+QUESTIONS.forEach(function(item, i){
+  var card = document.createElement("div"); card.className = "q";
+  var opts = OPTS.map(function(o){
+    return '<button type="button" data-q="'+i+'" data-v="'+o.v+'" aria-pressed="false">'+o.t+'</button>';
+  }).join("");
+  card.innerHTML = '<div class="cat">'+item.cat+'</div><p>'+item.q+'</p><div class="opts">'+opts+'</div>';
+  form.appendChild(card);
+});
+
+form.addEventListener("click", function(e){
+  var b = e.target.closest("button[data-q]"); if(!b) return;
+  var q = b.getAttribute("data-q");
+  answers[q] = Number(b.getAttribute("data-v"));
+  b.parentNode.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+  b.setAttribute("aria-pressed","true");
+  var n = Object.keys(answers).length;
+  document.getElementById("answered").textContent = n;
+  document.getElementById("barfill").style.width = (n/QUESTIONS.length*100)+"%";
+  document.getElementById("scoreBtn").disabled = n < QUESTIONS.length;
+});
+
+function band(score){
+  if(score >= 80) return {label:"Healthy", color:"var(--good)",
+    verdict:"Your CRM is in good shape. A periodic tune-up keeps it there."};
+  if(score >= 60) return {label:"Decent, with gaps", color:"var(--brand)",
+    verdict:"The fundamentals are there, but a few gaps are costing you time and visibility."};
+  if(score >= 40) return {label:"Needs work", color:"var(--warn)",
+    verdict:"Your CRM is underused and probably can't be trusted for reporting yet. Fixable."};
+  return {label:"Critical", color:"var(--bad)",
+    verdict:"You're paying for a CRM that isn't doing its job. The good news: this is exactly what a cleanup fixes."};
+}
+
+document.getElementById("scoreBtn").addEventListener("click", function(){
+  var raw = QUESTIONS.reduce(function(s,_,i){ return s + (answers[i]||0); }, 0);
+  var score = Math.round(raw / MAX * 100);
+  var b = band(score);
+  document.getElementById("scoreNum").textContent = score;
+  var bandEl = document.getElementById("band");
+  bandEl.textContent = b.label; bandEl.style.background = b.color; bandEl.style.color = "#fff";
+  document.getElementById("verdict").textContent = b.verdict;
+  var meter = document.getElementById("meterfill");
+  meter.style.background = b.color;
+  // weakest answers first -> the fixes that matter most for THIS respondent
+  var ranked = QUESTIONS.map(function(item,i){ return {i:i, v:(answers[i]||0), fix:item.fix}; })
+                        .sort(function(a,c){ return a.v - c.v; });
+  var picks = ranked.filter(function(r){ return r.v <= 1; }).slice(0,4);
+  var fixesBox = document.querySelector(".fixes");
+  if(picks.length){
+    document.getElementById("fixlist").innerHTML = picks.map(function(r){ return "<li>"+r.fix+"</li>"; }).join("");
+    fixesBox.style.display = "block";
+  } else {
+    fixesBox.style.display = "none";  // strong across the board — nothing to flag as a fix
+  }
+  document.getElementById("bookBtn").setAttribute("href", BOOKING_URL);
+  document.getElementById("result").style.display = "block";
+  setTimeout(function(){ meter.style.width = score + "%"; }, 60);
+  document.getElementById("result").scrollIntoView({behavior:"smooth"});
+});
+
+document.getElementById("againBtn").addEventListener("click", function(){
+  answers = {};
+  form.querySelectorAll('button[aria-pressed="true"]').forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+  document.getElementById("answered").textContent = "0";
+  document.getElementById("barfill").style.width = "0";
+  document.getElementById("scoreBtn").disabled = true;
+  document.getElementById("result").style.display = "none";
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+</script>
+</body>
+</html>
