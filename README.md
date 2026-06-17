@@ -1,13 +1,13 @@
 # CRM Health Check
 
-A free, 2-minute self-assessment that gives a small-business owner a **CRM health score (0–100)**
+A free, ~1-minute self-assessment that gives a small-business owner a **CRM health score (0–100)**
 plus the top fixes worth making — and ends with a CTA to book a free 30-minute audit. It's the
 **inbound** half of the consulting funnel: instead of chasing leads, prospects self-qualify (only
 someone genuinely feeling the pain finishes it and books).
 
 - **`index.html`** — the whole thing. One self-contained file: inline CSS + JS, **no backend, no
-  build step, no dependencies, no data leaves the browser.** 16 weighted questions across data
-  hygiene, pipeline, automation, reporting, adoption, integrations. The "first things I'd fix" list
+  build step, no dependencies, no data leaves the browser.** 8 weighted questions across data
+  hygiene, pipeline, automation, reporting, adoption, ownership, integrations and value. The "first things I'd fix" list
   is personalized from the respondent's weakest answers, and each maps to a service offering.
 
 ## How it fits the funnel

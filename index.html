@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CRM Health Check — score your CRM in 2 minutes</title>
-<meta name="description" content="A free 2-minute self-assessment for small businesses on HubSpot, Salesforce, Pipedrive, Zoho or GoHighLevel. Get a CRM health score and the top fixes — no signup.">
+<title>CRM Health Check — score your CRM in about a minute</title>
+<meta name="description" content="A free 1-minute self-assessment for small businesses on HubSpot, Salesforce, Pipedrive, Zoho or GoHighLevel. Get a CRM health score and the top fixes — no signup.">
 <style>
   :root{
     --ink:#15233b; --muted:#5b6b85; --line:#e4e9f2; --bg:#f6f8fc; --card:#fff;
@@ -60,16 +60,16 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="kicker">Free · 2 minutes · no signup</div>
+    <div class="kicker">Free · about a minute · no signup</div>
     <h1>How healthy is your CRM, really?</h1>
     <p class="sub">For small teams on HubSpot, Salesforce, Pipedrive, Zoho or GoHighLevel that bought a
-      CRM but never hired someone to run it. Answer 16 quick questions and get your score plus the
+      CRM but never hired someone to run it. Answer 8 quick questions and get your score plus the
       top things worth fixing.</p>
   </header>
 
   <div class="progress">
     <div class="bar"><i id="barfill"></i></div>
-    <div class="bar-label"><span id="answered">0</span> of <span id="total">16</span> answered</div>
+    <div class="bar-label"><span id="answered">0</span> of <span id="total">8</span> answered</div>
   </div>
 
   <form id="quiz"></form>
@@ -114,36 +114,20 @@ var BOOKING_URL = "https://calendar.app.google/v3L6z6QH2hd1MTpt9";
 var QUESTIONS = [
   {cat:"Data hygiene", q:"Your contacts &amp; companies are largely free of duplicates.",
    fix:"Dedupe and merge contacts/companies, then add guards so duplicates stop coming back."},
-  {cat:"Data hygiene", q:"Key fields (owner, source, lifecycle stage) are filled in consistently.",
-   fix:"Standardize and back-fill the few fields your reporting depends on."},
   {cat:"Pipeline", q:"Your deal stages match how you actually sell, and reps keep them current.",
    fix:"Redefine pipeline stages to match your real process and make updates effortless."},
-  {cat:"Lead routing", q:"Every new lead is automatically assigned to an owner.",
-   fix:"Set up automatic lead routing so nothing sits unassigned."},
   {cat:"Automation", q:"Repetitive tasks (follow-ups, reminders, internal alerts) are automated.",
    fix:"Automate the manual busywork that's currently eating selling time."},
-  {cat:"Automation", q:"You're confident your existing automations still work and aren't misfiring.",
-   fix:"Audit and fix the workflows quietly breaking or double-firing in the background."},
-  {cat:"Reporting", q:"You have dashboards leadership actually trusts and looks at.",
-   fix:"Build a small set of dashboards leaders will actually rely on."},
   {cat:"Reporting", q:"You can answer “where did this month’s revenue come from?” in minutes.",
    fix:"Wire up source-to-revenue reporting so attribution isn't a spreadsheet exercise."},
   {cat:"Adoption", q:"Your team uses the CRM daily — not spreadsheets on the side.",
    fix:"Remove the friction that's pushing your team back into spreadsheets."},
   {cat:"Ownership", q:"Someone clearly owns the CRM and keeps it clean.",
    fix:"Put a clear owner on the CRM (that's exactly the fractional role I fill)."},
-  {cat:"Segmentation", q:"Contacts are segmented well enough to send relevant outreach.",
-   fix:"Build the lists/segments that make outreach relevant instead of blast-all."},
-  {cat:"Segmentation", q:"You can tell a marketing-qualified lead from a sales-ready one.",
-   fix:"Define lifecycle stages / lead scoring so hand-offs are clear."},
   {cat:"Integrations", q:"Your CRM is connected to your other tools (email, forms, billing) — no manual re-entry.",
    fix:"Connect the systems people are currently copy-pasting between."},
   {cat:"Value", q:"You're getting the value you expected from what you pay for the CRM.",
-   fix:"Turn on the paid features you're already paying for but not using."},
-  {cat:"Time", q:"Reporting and cleanup don't eat hours of someone's week.",
-   fix:"Take the recurring cleanup and reporting off your team's plate."},
-  {cat:"Resilience", q:"If your “CRM person” left tomorrow, the system wouldn't fall apart.",
-   fix:"Document and stabilize the setup so it doesn't depend on one person's memory."}
+   fix:"Turn on the paid features you're already paying for but not using."}
 ];
 var OPTS = [{t:"No / not sure",v:0},{t:"Sort of",v:1},{t:"Yes",v:2}];
 var MAX = QUESTIONS.length * 2;
@@ -197,7 +181,7 @@ document.getElementById("scoreBtn").addEventListener("click", function(){
   // weakest answers first -> the fixes that matter most for THIS respondent
   var ranked = QUESTIONS.map(function(item,i){ return {i:i, v:(answers[i]||0), fix:item.fix}; })
                         .sort(function(a,c){ return a.v - c.v; });
-  var picks = ranked.filter(function(r){ return r.v <= 1; }).slice(0,4);
+  var picks = ranked.filter(function(r){ return r.v <= 1; }).slice(0,3);
   var fixesBox = document.querySelector(".fixes");
   if(picks.length){
     document.getElementById("fixlist").innerHTML = picks.map(function(r){ return "<li>"+r.fix+"</li>"; }).join("");
