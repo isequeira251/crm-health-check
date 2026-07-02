@@ -93,8 +93,12 @@
     <div class="cta-row" style="margin-top:0">
       <a class="btn" id="bookBtn" href="#" target="_blank" rel="noopener">Book my free CRM audit →</a>
     </div>
+    <div class="cta-row" style="margin-top:12px">
+      <a class="btn ghost" id="emailBtn" href="#">📩 Not ready for a call? Email Ian your results</a>
+    </div>
     <p class="disclaimer">This score is a self-assessment, not a substitute for a real audit.
-      Your answers stay in your browser — nothing is sent anywhere.</p>
+      Your answers stay in your browser — nothing is sent anywhere. The email button just opens a
+      draft in your own mail app with your score filled in; send it and I'll reply with a quick take.</p>
     <div class="cta-row" style="margin-top:14px">
       <button type="button" class="btn ghost" id="againBtn">Start over</button>
     </div>
@@ -190,6 +194,18 @@ document.getElementById("scoreBtn").addEventListener("click", function(){
     fixesBox.style.display = "none";  // strong across the board — nothing to flag as a fix
   }
   document.getElementById("bookBtn").setAttribute("href", BOOKING_URL);
+  // "Email my results": opens the visitor's own mail client with a pre-filled
+  // draft — user-initiated, nothing sent or stored by this page.
+  var catLines = QUESTIONS.map(function(item,i){
+    return item.cat + ": " + OPTS[answers[i]||0].t;
+  }).join("\n");
+  var mailBody = "Hi Ian,\n\nI just took your CRM Health Check.\n\n" +
+    "Score: " + score + "/100 (" + b.label + ")\n\n" + catLines + "\n\n" +
+    (picks.length ? "Suggested first fixes:\n" + picks.map(function(r){ return "- " + r.fix; }).join("\n") + "\n\n" : "") +
+    "Could you give me a quick read on these?\n\nMy CRM: \nTeam size: \n";
+  document.getElementById("emailBtn").setAttribute("href",
+    "mailto:sequeiri@gmail.com?subject=" + encodeURIComponent("My CRM Health Check: " + score + "/100") +
+    "&body=" + encodeURIComponent(mailBody));
   document.getElementById("result").style.display = "block";
   setTimeout(function(){ meter.style.width = score + "%"; }, 60);
   document.getElementById("result").scrollIntoView({behavior:"smooth"});
