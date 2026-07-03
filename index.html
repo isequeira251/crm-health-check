@@ -113,6 +113,13 @@
 // ---- CONFIG ---------------------------------------------------------------
 var BOOKING_URL = "https://calendar.app.google/v3L6z6QH2hd1MTpt9";
 
+// Anonymous aggregate click events (GoatCounter: no cookies, no PII) — mirrors the main site.
+function gcEvent(name){
+  if(window.goatcounter && window.goatcounter.count){
+    window.goatcounter.count({ path: name, title: name, event: true });
+  }
+}
+
 // Each question scores 0 (No / not sure), 1 (Sort of), 2 (Yes). A LOW total
 // means more pain. `fix` is the remediation shown when this item scores low.
 var QUESTIONS = [
@@ -206,10 +213,14 @@ document.getElementById("scoreBtn").addEventListener("click", function(){
   document.getElementById("emailBtn").setAttribute("href",
     "mailto:sequeiri@gmail.com?subject=" + encodeURIComponent("My CRM Health Check: " + score + "/100") +
     "&body=" + encodeURIComponent(mailBody));
+  gcEvent("scorecard/complete");
   document.getElementById("result").style.display = "block";
   setTimeout(function(){ meter.style.width = score + "%"; }, 60);
   document.getElementById("result").scrollIntoView({behavior:"smooth"});
 });
+
+document.getElementById("bookBtn").addEventListener("click", function(){ gcEvent("scorecard/book"); });
+document.getElementById("emailBtn").addEventListener("click", function(){ gcEvent("scorecard/email"); });
 
 document.getElementById("againBtn").addEventListener("click", function(){
   answers = {};
@@ -221,5 +232,6 @@ document.getElementById("againBtn").addEventListener("click", function(){
   window.scrollTo({top:0,behavior:"smooth"});
 });
 </script>
+<script data-goatcounter="https://iansequeira.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
